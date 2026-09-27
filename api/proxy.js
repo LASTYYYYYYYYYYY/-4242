@@ -5,13 +5,14 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const targetUrl = `https://generativelanguage.googleapis.com${req.url}`;
+  const { model, key } = req.query;
+  const targetUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
 
   try {
     const response = await fetch(targetUrl, {
-      method: req.method,
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
+      body: JSON.stringify(req.body)
     });
     const data = await response.json();
     res.status(response.status).json(data);
